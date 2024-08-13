@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -74,7 +73,7 @@ public class Logic {
      */
     public int findInColumn(String target, int column) {
         for (int y = 7; y > 0; y--) {
-            boolean foundTarget = this.board[y][column].equals(target);
+            boolean foundTarget = board[y][column].equals(target);
             if (foundTarget) {
                 return y;
             }
@@ -105,53 +104,51 @@ public class Logic {
      * This function updates the board to reflect the gameState.
      */
     public void gameStateToBoard() {
-        String moveStates = this.moveStates; // placeholder to simplify syntax
-        String[][] newBoard = this.initBlankBoard(); // this is the board that will reflect our new gameState
+        String moveStates = getMoveStates(); // placeholder to simplify syntax
+        String[][] newBoard = initBlankBoard(); // this is the board that will reflect our new gameState
 
         for (int i = 0; i < moveStates.length(); i++) {
             switch (moveStates.charAt(i)) { // switch based on the type of move
-                case 'C': {
+                case 'C':
                     int column = Integer.parseInt(String.valueOf(gameState.getFirst().charAt(i))); // every gameState will have the same character at the ith position since it's certain
-                    int row = this.firstOpenRow(newBoard, column); // find the depth that the piece should fall to
+                    int row = firstOpenRow(newBoard, column); // find the depth that the piece should fall to
                     if (i % 2 == 0) {
                         newBoard[row][column] = "PPP";
+                        break;
                     } else {
                         newBoard[row][column] = "YYY";
+                        break;
                     }
-                    break;
-                }
-                case 'H': {
-                    int[] columnsPlayedIn = this.getIthCharacter(i); // the columns played in are the unique ith
+                case 'H':
+                    int[] columnsPlayedIn = getIthCharacter(i); // the columns played in are the unique ith
                     // characters in the gameStates
-                    int[] rows1 = this.findDepths(newBoard, columnsPlayedIn); // find the depths of the columns played in place the pieces in the horizontal superposition on the board
+                    int[] rows1 = findDepths(newBoard, columnsPlayedIn); // find the depths of the columns played in place the pieces in the horizontal superposition on the board
                     for (int col = 0; col < columnsPlayedIn.length; col++) {
-                        int row = rows1[col];
-                        int column = columnsPlayedIn[col];
+                        int row1 = rows1[col];
+                        int column1 = columnsPlayedIn[col];
                         if (i % 2 == 0) {
-                            newBoard[row][column] = "PXX";
+                            newBoard[row1][column1] = "PXX";
                         } else {
-                            newBoard[row][column] = "YXX";
+                            newBoard[row1][column1] = "YXX";
                         }
                     }
                     break;
-                }
-                case 'V': {
-                    int[] colsPlayedIn2 = this.getIthCharacter(i);
-                    int[] rows2 = this.findDepths(newBoard, colsPlayedIn2);
+                case 'V':
+                    int[] colsPlayedIn2 = getIthCharacter(i);
+                    int[] rows2 = findDepths(newBoard, colsPlayedIn2);
                     for (int col = 0; col < colsPlayedIn2.length; col++) {
-                        int row = rows2[col];
-                        int column = colsPlayedIn2[col];
+                        int row2 = rows2[col];
+                        int column2 = colsPlayedIn2[col];
                         if (i % 2 == 0) {
-                            newBoard[row][column] = "XXP";
+                            newBoard[row2][column2] = "XXP";
                         } else {
-                            newBoard[row][column] = "XXY";
+                            newBoard[row2][column2] = "XXY";
                         }
                     }
                     break;
-                }
             }
         }
-        this.board = newBoard; // Update Board to reflect gameState
+        setBoard(newBoard); // Update Board to reflect gameState
     }
 
     /*
@@ -159,9 +156,8 @@ public class Logic {
      */
     public String[][] initBlankBoard() {
         String[][] board = new String[HEIGHT][WIDTH];
-        String[] row = {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"};
         for (int y = 0; y < HEIGHT; y++) {
-            board[y] = row;
+            board[y] = new String[] {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"};
         }
         return board;
     }
@@ -193,7 +189,7 @@ public class Logic {
         int[] rows = new int[2];
         int i = 0;
         for (int column : columnsPlayedIn) {
-            int row = this.firstOpenRow(board, column);
+            int row = firstOpenRow(board, column);
             rows[i] = row;
             i++;
         }
@@ -313,7 +309,7 @@ public class Logic {
     }
 
     public int[] findPiecesToMeasure() {
-        int indexToMeasure = this.moveStates.length() - 3;  // always measuring 3 spots back from the last character
+        int indexToMeasure = moveStates.length() - 3;  // always measuring 3 spots back from the last character
         int[] nothingToMeasure = {-1, -1, -1, -1};
 
 
@@ -321,39 +317,39 @@ public class Logic {
             return nothingToMeasure;
         }
 
-        if (this.moveStates.charAt(indexToMeasure) == 'C') {
+        if (moveStates.charAt(indexToMeasure) == 'C') {
             return nothingToMeasure;
         }
 
         ArrayList<Integer> piecesToMeasure = new ArrayList<Integer>();
-        char state = this.moveStates.charAt(indexToMeasure);
-        int[] options = this.getIthCharacter(indexToMeasure);
-        int colorToLookFor = this.moveStates.length() % 2;
+        char state = moveStates.charAt(indexToMeasure);
+        int[] options = getIthCharacter(indexToMeasure);
+        int colorToLookFor = moveStates.length() % 2;
 
         if (colorToLookFor == 1 && state == 'V') {
             String target = "XXP";
             piecesToMeasure.add(options[0]);
-            piecesToMeasure.add(this.findInColumn(target, options[0]));
+            piecesToMeasure.add(findInColumn(target, options[0]));
             piecesToMeasure.add(options[1]);
-            piecesToMeasure.add(this.findInColumn(target, options[1]));
+            piecesToMeasure.add(findInColumn(target, options[1]));
         } else if (colorToLookFor == 1 && state == 'H') {
             String target = "PXX";
             piecesToMeasure.add(options[0]);
-            piecesToMeasure.add(this.findInColumn(target, options[0]));
+            piecesToMeasure.add(findInColumn(target, options[0]));
             piecesToMeasure.add(options[1]);
-            piecesToMeasure.add(this.findInColumn(target, options[1]));
+            piecesToMeasure.add(findInColumn(target, options[1]));
         } else if (colorToLookFor == 0 && state == 'V') {
             String target = "XXY";
             piecesToMeasure.add(options[0]);
-            piecesToMeasure.add(this.findInColumn(target, options[0]));
+            piecesToMeasure.add(findInColumn(target, options[0]));
             piecesToMeasure.add(options[1]);
-            piecesToMeasure.add(this.findInColumn(target, options[1]));
+            piecesToMeasure.add(findInColumn(target, options[1]));
         } else if (colorToLookFor == 0 && state == 'H') {
             String target = "YXX";
             piecesToMeasure.add(options[0]);
-            piecesToMeasure.add(this.findInColumn(target, options[0]));
+            piecesToMeasure.add(findInColumn(target, options[0]));
             piecesToMeasure.add(options[1]);
-            piecesToMeasure.add(this.findInColumn(target, options[1]));
+            piecesToMeasure.add(findInColumn(target, options[1]));
         }
 
         int[] returnValue = new int[piecesToMeasure.size()];
@@ -436,13 +432,13 @@ public class Logic {
 
         int firstX = firstPlacement;
         int secondX = secondPlacement;
-        int firstY = firstOpenRow(this.board, firstPlacement) + 1;
-        int secondY = firstOpenRow(this.board, secondPlacement) + 1;
+        int firstY = firstOpenRow(board, firstPlacement) + 1;
+        int secondY = firstOpenRow(board, secondPlacement) + 1;
 
         // CHECK FOR DOUBLE ENTANGLEMENT. THIS CHECK IS OK BECAUSE WE ONLY EVER HAVE THREE QUANTUM PIECES ON THE BOARD AT A TIME
         if (firstY < 6) {
-            String pieceBelowFirst = this.board[firstY + 1][firstX];
-            String secondPieceBelowFirst = this.board[firstY + 2][firstX];
+            String pieceBelowFirst = board[firstY + 1][firstX];
+            String secondPieceBelowFirst = board[firstY + 2][firstX];
             boolean piecesBelowAlreadyEntangled =
                     (secondPieceBelowFirst.equals("YXX") && pieceBelowFirst.equals("XXP")) ||
                             (secondPieceBelowFirst.equals("XXY") && pieceBelowFirst.equals("PXX")) ||
@@ -454,8 +450,8 @@ public class Logic {
         }
 
         if (secondY < 6) {
-            String pieceBelowFirst = this.board[secondY + 1][secondX];
-            String secondPieceBelowFirst = this.board[secondY + 2][secondX];
+            String pieceBelowFirst = board[secondY + 1][secondX];
+            String secondPieceBelowFirst = board[secondY + 2][secondX];
             boolean piecesBelowAlreadyEntangled =
                     (secondPieceBelowFirst.equals("YXX") && pieceBelowFirst.equals("XXP")) ||
                             (secondPieceBelowFirst.equals("XXY") && pieceBelowFirst.equals("PXX")) ||
@@ -467,8 +463,8 @@ public class Logic {
         }
 
         if (firstY < 7) {
-            String firstPiece = this.board[firstY][firstX];
-            String pieceBelowFirst = this.board[firstY + 1][firstX];
+            String firstPiece = board[firstY][firstX];
+            String pieceBelowFirst = board[firstY + 1][firstX];
             boolean isFirstPieceEntangled =
                     (firstPiece.equals("YXX") && pieceBelowFirst.equals("XXP")) ||
                             (firstPiece.equals("XXY") && pieceBelowFirst.equals("PXX")) ||
@@ -482,8 +478,8 @@ public class Logic {
         }
 
         if (secondY < 7) {
-            String secondPiece = this.board[secondY][secondX];
-            String pieceBelowSecond = this.board[secondY + 1][secondX];
+            String secondPiece = board[secondY][secondX];
+            String pieceBelowSecond = board[secondY + 1][secondX];
             boolean isSecondPieceEntangled =
                     (secondPiece.equals("YXX") && pieceBelowSecond.equals("XXP")) ||
                             (secondPiece.equals("XXY") && pieceBelowSecond.equals("PXX")) ||
@@ -610,7 +606,7 @@ public class Logic {
     public String checkAscendingDiagonals() {
         for (int y = 7; y > 4; y--) {
             for (int x = 0; x < 4; x++) {
-                String state = this.board[y][x];
+                String state = board[y][x];
                 boolean itsCertain = state.equals("PPP") || state.equals("YYY");
                 boolean thereIsAGroup =
                         board[y][x].equals(board[y - 1][x + 1]) &&
@@ -643,10 +639,10 @@ public class Logic {
                         board[y][x].equals(board[y + 2][x + 2]) &&
                         board[y][x].equals(board[y + 3][x + 3]);
                 boolean noProppedPieces =
-                        this.noProppedPiece(x, y + 1) &&
-                                this.noProppedPiece(x + 1, y + 2) &&
-                                this.noProppedPiece(x + 2, y + 3) &&
-                                this.noProppedPiece(x + 3, y + 4);
+                        noProppedPiece(x, y + 1) &&
+                                noProppedPiece(x + 1, y + 2) &&
+                                noProppedPiece(x + 2, y + 3) &&
+                                noProppedPiece(x + 3, y + 4);
                 if (thereIsAGroup && itsCertain && noProppedPieces) {
                     return state;
                 }
@@ -746,7 +742,7 @@ public class Logic {
      */
     public String place() {
         int column = turnInProgress.getColumn();
-        int row = this.firstOpenRow(board, column);
+        int row = firstOpenRow(board, column);
         String state = turnInProgress.getState();
         int firstPlacement = turnInProgress.getFirstPlacement();
         boolean validClassicMove = state.equals("certain") && row >= 2;
@@ -757,11 +753,11 @@ public class Logic {
                         !board[2][column].equals("PPP") &&
                 !board[2][column].equals("YYY");
         if (state.equals("certain") && validClassicMove) {
-            return this.placeCertainPiece();
+            return placeCertainPiece();
         } else if (state.equals("horizontal") && validQuantumMove) {
-            return this.placeHorizontalPiece();
+            return placeHorizontalPiece();
         } else if (state.equals("vertical") && validQuantumMove) {
-            return this.placeVerticalPiece();
+            return placeVerticalPiece();
         }
         return "notDone";
     }
@@ -772,9 +768,9 @@ public class Logic {
      */
     public String placeCertainPiece() {
         int column = turnInProgress.getColumn();
-        this.updateGameState(column, column);
+        updateGameState(column, column);
         moveStates = moveStates.concat("C");
-        this.gameStateToBoard();
+        gameStateToBoard();
         return "done";
     }
 
@@ -783,7 +779,7 @@ public class Logic {
      * @return (int) depth
      */
     public int turnInProgressDepth(int column) {
-        int firstOpenRow = this.firstOpenRow(board, column);
+        int firstOpenRow = firstOpenRow(board, column);
         return firstOpenRow >= 2 ? 1 : firstOpenRow;
     }
 
@@ -823,14 +819,6 @@ public class Logic {
         for (int y = 0; y < HEIGHT; y++){
             for (int x = 0; x < WIDTH; x++){
                 System.out.print(board[y][x]);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-        for (String[] row : board){
-            for (String entry : row){
-                System.out.print(entry);
                 System.out.print(" ");
             }
             System.out.println();
