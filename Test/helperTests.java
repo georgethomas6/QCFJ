@@ -1,8 +1,11 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class mainTest {
+public class helperTests {
 
     private Logic logic;
 
@@ -10,14 +13,6 @@ class mainTest {
     public void setUp(){
         logic = new Logic();
     }
-
-    @Test
-    public void templateTest(){
-
-    }
-
-
-
 
     @Test
     public void testFindInColumn(){
@@ -30,21 +25,21 @@ class mainTest {
         logic.place();
         logic.printBoard();
         assertEquals(logic.findInColumn("YYY", 5), 7);
-
     }
 
     @Test
-    public void testTurnInProgressDepth() {
+    public void testGetIthCharacter(){
+        ArrayList<String> newGameState = new ArrayList<>();
+        newGameState.add("342");
+        newGameState.add("333");
+        newGameState.add("333");
+        logic.setGameState(newGameState);
+        int[] ithChars = {2, 3};
+        assertArrayEquals(logic.getIthCharacter(2), ithChars);
 
-        assertEquals(1, logic.turnInProgressDepth(3));
+        newGameState.add("337");
+        int[] IthChars = {2, 3, 7};
+        assertArrayEquals(logic.getIthCharacter(2), IthChars);
 
-        assertEquals(1, logic.turnInProgressDepth(0));
-        logic.place();
-        logic.place();
-        logic.printBoard();
-
-        assertEquals(2, logic.turnInProgressDepth(3));
     }
-
-
 }
