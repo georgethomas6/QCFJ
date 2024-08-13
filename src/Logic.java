@@ -359,4 +359,77 @@ public class Logic {
 
     }
 
+    /**
+     * This function returns a list containing the x and y position if we need to entangle.
+     * It returns an empty list otherwise.
+     * @return List containing [x, y] or an empty list [-1]
+     */
+    public ArrayList<Integer> doWeNeedToEntangle(int firstPlacement, int secondPlacement) {
+        ArrayList<Integer> returnValue = new ArrayList<>();
+
+        int firstX = firstPlacement;
+        int secondX = secondPlacement;
+        int firstY = firstOpenRow(this.board, firstPlacement) + 1;
+        int secondY = firstOpenRow(this.board, secondPlacement) + 1;
+
+        // CHECK FOR DOUBLE ENTANGLEMENT. THIS CHECK IS OK BECAUSE WE ONLY EVER HAVE THREE QUANTUM PIECES ON THE BOARD AT A TIME
+        if (firstY < 6) {
+            String pieceBelowFirst = this.board[firstY + 1][firstX];
+            String secondPieceBelowFirst = this.board[firstY + 2][firstX];
+            boolean piecesBelowAlreadyEntangled =
+                    (secondPieceBelowFirst.equals("YXX") && pieceBelowFirst.equals("XXP")) ||
+                            (secondPieceBelowFirst.equals("XXY") && pieceBelowFirst.equals("PXX")) ||
+                            (secondPieceBelowFirst.equals("PXX") && pieceBelowFirst.equals("XXY")) ||
+                            (secondPieceBelowFirst.equals("XXP") && pieceBelowFirst.equals("YXX"));
+            if (piecesBelowAlreadyEntangled) {
+                return new ArrayList<>(); // Return an empty list
+            }
+        }
+
+        if (secondY < 6) {
+            String pieceBelowFirst = this.board[secondY + 1][secondX];
+            String secondPieceBelowFirst = this.board[secondY + 2][secondX];
+            boolean piecesBelowAlreadyEntangled =
+                    (secondPieceBelowFirst.equals("YXX") && pieceBelowFirst.equals("XXP")) ||
+                            (secondPieceBelowFirst.equals("XXY") && pieceBelowFirst.equals("PXX")) ||
+                            (secondPieceBelowFirst.equals("PXX") && pieceBelowFirst.equals("XXY")) ||
+                            (secondPieceBelowFirst.equals("XXP") && pieceBelowFirst.equals("YXX"));
+            if (piecesBelowAlreadyEntangled) {
+                return new ArrayList<>(); // Return an empty list
+            }
+        }
+
+        if (firstY < 7) {
+            String firstPiece = this.board[firstY][firstX];
+            String pieceBelowFirst = this.board[firstY + 1][firstX];
+            boolean isFirstPieceEntangled =
+                    (firstPiece.equals("YXX") && pieceBelowFirst.equals("XXP")) ||
+                            (firstPiece.equals("XXY") && pieceBelowFirst.equals("PXX")) ||
+                            (firstPiece.equals("PXX") && pieceBelowFirst.equals("XXY")) ||
+                            (firstPiece.equals("XXP") && pieceBelowFirst.equals("YXX"));
+            if (isFirstPieceEntangled) {
+                returnValue.add(firstX);
+                returnValue.add(firstY);
+                return returnValue;
+            }
+        }
+
+        if (secondY < 7) {
+            String secondPiece = this.board[secondY][secondX];
+            String pieceBelowSecond = this.board[secondY + 1][secondX];
+            boolean isSecondPieceEntangled =
+                    (secondPiece.equals("YXX") && pieceBelowSecond.equals("XXP")) ||
+                            (secondPiece.equals("XXY") && pieceBelowSecond.equals("PXX")) ||
+                            (secondPiece.equals("PXX") && pieceBelowSecond.equals("XXY")) ||
+                            (secondPiece.equals("XXP") && pieceBelowSecond.equals("YXX"));
+            if (isSecondPieceEntangled) {
+                returnValue.add(secondX);
+                returnValue.add(secondY);
+                return returnValue;
+            }
+        }
+
+        return returnValue;
+    }
+
 }
