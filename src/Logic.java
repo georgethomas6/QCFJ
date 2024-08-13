@@ -43,7 +43,7 @@ public class Logic {
         return winner;
     }
 
-    public TurnInProgress getTurnInProgress(){
+    public TurnInProgress getTurnInProgress() {
         return turnInProgress;
     }
 
@@ -151,7 +151,7 @@ public class Logic {
                 }
             }
         }
-        this.board = newBoard; // Update Board to reflect gameState
+        setBoard(newBoard); // Update Board to reflect gameState
     }
 
     /*
@@ -541,6 +541,7 @@ public class Logic {
 
     /**
      * Checks for an uncertain piece under the top piece played in a given column.
+     *
      * @return true if there are no uncertain pieces in the given column, false otherwise
      */
 
@@ -558,6 +559,7 @@ public class Logic {
 
     /**
      * This function checks every single column for a group. No need to check for propped pieces here
+     *
      * @return "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
      */
     public String checkColumns() {
@@ -567,8 +569,8 @@ public class Logic {
                 boolean itsCertain = state.equals("PPP") || state.equals("YYY");
                 boolean thereIsAGroup =
                         board[y][x].equals(board[y - 1][x]) &&
-                        board[y][x].equals(board[y - 2][x]) &&
-                        board[y][x].equals(board[y - 3][x]);
+                                board[y][x].equals(board[y - 2][x]) &&
+                                board[y][x].equals(board[y - 3][x]);
                 if (thereIsAGroup && itsCertain) {
                     return state;
                 }
@@ -579,6 +581,7 @@ public class Logic {
 
     /**
      * This function checks every single row for a group. In the process it makes sure no member of the group is being propped up by an uncertain piece
+     *
      * @return "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
      */
     public String checkRows() {
@@ -588,8 +591,8 @@ public class Logic {
                 boolean itsCertain = state.equals("PPP") || state.equals("YYY");
                 boolean thereIsAGroup =
                         board[y][x].equals(board[y][x + 1]) &&
-                        board[y][x].equals(board[y][x + 2]) &&
-                        board[y][x].equals(board[y][x + 3]);
+                                board[y][x].equals(board[y][x + 2]) &&
+                                board[y][x].equals(board[y][x + 3]);
                 boolean noProppedPieces =
                         noProppedPiece(x, y + 1) &&
                                 noProppedPiece(x + 1, y + 1) &&
@@ -605,6 +608,7 @@ public class Logic {
 
     /**
      * Checks for ascending diagonal groups on the board. In the process it checks for propped pieces
+     *
      * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
      */
     public String checkAscendingDiagonals() {
@@ -614,8 +618,8 @@ public class Logic {
                 boolean itsCertain = state.equals("PPP") || state.equals("YYY");
                 boolean thereIsAGroup =
                         board[y][x].equals(board[y - 1][x + 1]) &&
-                        board[y][x].equals(board[y - 2][x + 2]) &&
-                        board[y][x].equals(board[y - 3][x + 3]);
+                                board[y][x].equals(board[y - 2][x + 2]) &&
+                                board[y][x].equals(board[y - 3][x + 3]);
                 boolean noProppedPieces =
                         noProppedPiece(x, y + 1) &&
                                 noProppedPiece(x + 1, y) &&
@@ -631,6 +635,7 @@ public class Logic {
 
     /**
      * Checks for descending diagonal groups on the board. In the process it checks for propped pieces
+     *
      * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
      */
     public String checkDescendingDiagonals() {
@@ -640,8 +645,8 @@ public class Logic {
                 boolean itsCertain = state.equals("PPP") || state.equals("YYY");
                 boolean thereIsAGroup =
                         board[y][x].equals(board[y + 1][x + 1]) &&
-                        board[y][x].equals(board[y + 2][x + 2]) &&
-                        board[y][x].equals(board[y + 3][x + 3]);
+                                board[y][x].equals(board[y + 2][x + 2]) &&
+                                board[y][x].equals(board[y + 3][x + 3]);
                 boolean noProppedPieces =
                         this.noProppedPiece(x, y + 1) &&
                                 this.noProppedPiece(x + 1, y + 2) &&
@@ -658,6 +663,7 @@ public class Logic {
 
     /**
      * Checks to see if the game has been won
+     *
      * @return "PPP" if purple has won the game, "YYY" if yellow has won the game, "XXX" if there game has not been won
      */
     public String checkWinner() {
@@ -675,6 +681,7 @@ public class Logic {
 
     /**
      * Checks to see if the game has been drawn
+     *
      * @return true if the game has been drawn, false otherwise
      */
     public boolean isGameDrawn() {
@@ -714,13 +721,14 @@ public class Logic {
      * If a vertical piece has not been placed during the turn, this function temporarily places a vertical piece
      * at the appropriate location above the board. Otherwise, it gets rid of the temporary piece and drops the pieces
      * to the correct depths. Should only be called on valid moves.
+     *
      * @return "done" if the turn is over, "notDone" otherwise
      */
-    public String placeVerticalPiece(){
+    public String placeVerticalPiece() {
         int column = turnInProgress.getColumn();
         int firstPlacement = turnInProgress.getFirstPlacement();
-        if (firstPlacement == -1){
-            if (turnInProgress.getColor().equals("purple")){
+        if (firstPlacement == -1) {
+            if (turnInProgress.getColor().equals("purple")) {
                 board[turnInProgressDepth(column)][column] = "XXP";
             } else {
                 board[turnInProgressDepth(column)][column] = "XXY";
@@ -755,7 +763,7 @@ public class Logic {
                         row >= 2 &&
                         firstPlacement != column &&
                         !board[2][column].equals("PPP") &&
-                !board[2][column].equals("YYY");
+                        !board[2][column].equals("YYY");
         if (state.equals("certain") && validClassicMove) {
             return this.placeCertainPiece();
         } else if (state.equals("horizontal") && validQuantumMove) {
@@ -768,6 +776,7 @@ public class Logic {
 
     /**
      * Places a certain piece on the board. Should only be called on valid moves.
+     *
      * @returns "done"
      */
     public String placeCertainPiece() {
@@ -780,6 +789,7 @@ public class Logic {
 
     /**
      * This function calculates the height at which a turnInProgress should be drawn
+     *
      * @return (int) depth
      */
     public int turnInProgressDepth(int column) {
@@ -787,19 +797,19 @@ public class Logic {
         return firstOpenRow >= 2 ? 1 : firstOpenRow;
     }
 
-   
 
     /**
      * If a horizontal piece has not been placed during the turn, this function temporarily places a horizontal piece
      * at the appropriate location above the board. Otherwise, it gets rid of the temporary piece and drops the pieces
      * to the correct depths. Should only be called on valid moves.
+     *
      * @return "done" if the turn is over, "notDone" otherwise
      */
-    public String placeHorizontalPiece(){
+    public String placeHorizontalPiece() {
         int column = turnInProgress.getColumn();
         int firstPlacement = turnInProgress.getFirstPlacement();
-        if (firstPlacement == -1){
-            if (turnInProgress.getColor().equals("purple")){
+        if (firstPlacement == -1) {
+            if (turnInProgress.getColor().equals("purple")) {
                 board[turnInProgressDepth(column)][column] = "PXX";
             } else {
                 board[turnInProgressDepth(column)][column] = "YXX";
@@ -819,17 +829,17 @@ public class Logic {
         return "done";
     }
 
-    public void printBoard(){
-        for (int y = 0; y < HEIGHT; y++){
-            for (int x = 0; x < WIDTH; x++){
+    public void printBoard() {
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
                 System.out.print(board[y][x]);
                 System.out.print(" ");
             }
             System.out.println();
         }
         System.out.println();
-        for (String[] row : board){
-            for (String entry : row){
+        for (String[] row : board) {
+            for (String entry : row) {
                 System.out.print(entry);
                 System.out.print(" ");
             }
@@ -837,5 +847,5 @@ public class Logic {
         }
     }
 
-    }
 }
+
