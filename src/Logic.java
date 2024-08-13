@@ -493,4 +493,69 @@ public class Logic {
     }
 
 
+    /**
+     * Checks for an uncertain piece under the top piece played in a given column.
+     * @returns true if there are no uncertain pieces in the given column, false otherwise
+     */
+
+    public boolean noProppedPiece(int col, int row) {
+        while (row < 8) {
+            boolean isCertain =
+                    this.board[row][col].equals("PPP") || this.board[row][col].equals("YYY");
+            if (!isCertain) {
+                return false;
+            }
+            row++;
+        }
+        return false;
+    }
+
+    /**
+     * This function checks every single column for a group. No need to check for propped pieces here
+     * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
+     */
+    public String checkColumns() {
+        for (int y = 7; y > 4; y--) {
+            for (int x = 0; x < 7; x++) {
+                String state = this.board[y][x];
+                boolean itsCertain = state.equals("PPP") || state.equals("YYY");
+                boolean thereIsAGroup =
+                        this.board[y][x].equals(this.board[y - 1][x]) &&
+                        this.board[y][x].equals(this.board[y - 2][x]) &&
+                        this.board[y][x].equals(this.board[y - 3][x]);
+                if (thereIsAGroup && itsCertain) {
+                    return state;
+                }
+            }
+        }
+        return "XXX";
+    }
+
+    /**
+     * This function checks every single row for a group. In the process it makes sure no member of the group is being propped up by an uncertain piece
+     * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
+     */
+    public String checkRows() {
+        for (int y = 7; y > 1; y--) {
+            for (int x = 0; x < 4; x++) {
+                String state = this.board[y][x];
+                boolean itsCertain = state.equals("PPP") || state.equals("YYY");
+                boolean thereIsAGroup =
+                        this.board[y][x].equals(this.board[y][x + 1]) &&
+                        this.board[y][x].equals(this.board[y][x + 2]) &&
+                        this.board[y][x].equals(this.board[y][x + 3]);
+                boolean noProppedPieces =
+                        this.noProppedPiece(x, y + 1) &&
+                                this.noProppedPiece(x + 1, y + 1) &&
+                                this.noProppedPiece(x + 2, y + 1) &&
+                                this.noProppedPiece(x + 3, y + 1);
+                if (thereIsAGroup && itsCertain && noProppedPieces) {
+                    return state;
+                }
+            }
+        }
+        return "XXX";
+    }
+    
+
 }
