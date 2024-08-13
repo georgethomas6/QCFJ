@@ -9,7 +9,7 @@ public class Logic {
     final private int WIDTH = 7;
 
     private String[][] board;
-
+    private TurnInProgress turnInProgress;
     private ArrayList<String> gameState;
     private String winner;
     private String moveStates;
@@ -18,6 +18,7 @@ public class Logic {
         this.board = new String[HEIGHT][WIDTH];
         this.gameState = new ArrayList<>();
         this.moveStates = "";
+        this.turnInProgress = new TurnInProgress("purple");
         this.winner = "XXX";
         for (int y = 0; y < HEIGHT; y++) {
             String[] row = {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"};
@@ -536,7 +537,7 @@ public class Logic {
 
     /**
      * Checks for an uncertain piece under the top piece played in a given column.
-     * @returns true if there are no uncertain pieces in the given column, false otherwise
+     * @return true if there are no uncertain pieces in the given column, false otherwise
      */
 
     public boolean noProppedPiece(int col, int row) {
@@ -553,7 +554,7 @@ public class Logic {
 
     /**
      * This function checks every single column for a group. No need to check for propped pieces here
-     * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
+     * @return "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
      */
     public String checkColumns() {
         for (int y = 7; y > 4; y--) {
@@ -574,7 +575,7 @@ public class Logic {
 
     /**
      * This function checks every single row for a group. In the process it makes sure no member of the group is being propped up by an uncertain piece
-     * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
+     * @return "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
      */
     public String checkRows() {
         for (int y = 7; y > 1; y--) {
@@ -650,7 +651,63 @@ public class Logic {
         return "XXX";
     }
 
-    
+
+    /**
+     * Checks to see if the game has been won
+     * @return "PPP" if purple has won the game, "YYY" if yellow has won the game, "XXX" if there game has not been won
+     */
+    public String checkWinner() {
+        if (checkColumns().equals("XXX")) {
+            return checkColumns();
+        } else if (checkRows().equals("XXX")) {
+            return checkRows();
+        } else if (checkAscendingDiagonals().equals("XXX")) {
+            return checkAscendingDiagonals();
+        } else if (checkDescendingDiagonals().equals("XXX")) {
+            return checkDescendingDiagonals();
+        }
+        return "XXX";
+    }
+
+    /**
+     * Checks to see if the game has been drawn
+     * @return true if the game has been drawn, false otherwise
+     */
+    public boolean isGameDrawn() {
+        int count = 0;
+        for (int y = 7; y > 1; y--) {
+            for (int x = 0; x < 7; x++) {
+                if (board[y][x].equals("XXX")) {
+                    count++;
+                }
+            }
+        }
+        return count == 42;
+    }
+
+    /**
+     * Sets the following variables to these values
+     * canModifyState = true
+     * column = 3
+     * firstPlacement = -1
+     * state = "certain"
+     * color = opposite of previous
+     */
+    public void changeTurn() {
+        turnInProgress.setCanModifyState(true);
+        turnInProgress.setColumn(3);
+        turnInProgress.setFirstPlacement(-1);
+        turnInProgress.setSecondPlacement(-1);
+        turnInProgress.setState("certain");
+        if (turnInProgress.getColor().equals("purple")) {
+            turnInProgress.setColor("yellow");
+        } else {
+            turnInProgress.setColor("purple");
+        }
+    }
+
+
+
 
 
 }

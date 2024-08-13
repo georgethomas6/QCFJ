@@ -53,6 +53,10 @@ public class TurnInProgress {
         this.secondPlacement = column;
     }
 
+    public void setColor(String color){
+        this.color = color;
+    }
+
     public void setCanModifyState(boolean truthValue){
         this.canModifyState = truthValue;
     }
