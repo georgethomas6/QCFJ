@@ -50,7 +50,19 @@ class mainTest {
         logic.printBoard();
         assertEquals(logic.findInColumn("YYY", 5), 7);
 
-
-
     }
+
+    @Test
+    public void testTurnInProgressDepth() {
+
+        assertEquals(1, logic.turnInProgressDepth(3));
+
+        assertEquals(1, logic.turnInProgressDepth(0));
+        logic.place();
+        logic.place();
+        logic.printBoard();
+
+        assertEquals(2, logic.turnInProgressDepth(3));
+    }
+
 }
