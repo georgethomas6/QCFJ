@@ -237,72 +237,126 @@ public class Logic {
     }
 
 
-/**
- * Finds the repeating character in an entanglement. This function should only
- * be called in handleEntanglement().
- *
- * @return -> the character that appears in the all case, if did not find a
- * repeated char it returns 'X'
- */
-public char findRepeatedChar() {
-    int index = moveStates.length() - 2;
-    int[] ithChars = getIthCharacter(index);
-    int count = 0;
-    for (String game : gameState) {
-        for (int character : ithChars) {
-            for (int i = index; i < game.length(); i++) {
-                if (game.charAt(i) == character + 48) {
-                    count++;
-                }
-                if (count == 2) {
-                    return (char) (character + 48);
+    /**
+     * Finds the repeating character in an entanglement. This function should only
+     * be called in handleEntanglement().
+     *
+     * @return -> the character that appears in the all case, if did not find a
+     * repeated char it returns 'X'
+     */
+    public char findRepeatedChar() {
+        int index = moveStates.length() - 2;
+        int[] ithChars = getIthCharacter(index);
+        int count = 0;
+        for (String game : gameState) {
+            for (int character : ithChars) {
+                for (int i = index; i < game.length(); i++) {
+                    if (game.charAt(i) == character + 48) {
+                        count++;
+                    }
+                    if (count == 2) {
+                        return (char) (character + 48);
+                    }
                 }
             }
         }
-    }
-    return 'X';
-}
-
-/**
- * Returns 'A' if it is an all or nothing case, 'B' otherwise
- *
- * @param column -> entanglement is occurring in
- * @param row    -> row first height in the entanglement
- * @return 'A', 'B' or 'X' if index out of bound error
- */
-public char findEntanglementType(int column, int row) {
-    if (row == 7) {
-        System.out.println("OOPS INDEX OUT OF BOUNDS IN findEntanglementType");
         return 'X';
     }
-    String topPiece = board[row][column];
-    String bottomPiece = board[row + 1][column];
-    if ((bottomPiece.equals("PXX") && topPiece.equals("XXY"))
-            || (bottomPiece.equals("YXX") && topPiece.equals("XXP"))) {
-        {
-            return 'A';
-        }
-    } else {
-        return 'B';
-    }
-}
 
-/**
- * Is entanglement occurring
- */
-public boolean isEntanglementOccurring() {
-    for (int y = 7; y > 1; y--) {
-        for (int x = 0; x < 7; x++) {
-            boolean isEntangled = (board[y][x].equals("PXX") && board[y - 1][x].equals("XXY")) ||
-                    (board[y][x].equals("PXX") && board[y - 1][x].equals("YXX")) ||
-                    (board[y][x].equals("YXX") && board[y - 1][x].equals("XXP")) ||
-                    (board[y][x].equals("XXY") && board[y - 1][x].equals("PXX"));
-            if (isEntangled) {
-                return true;
+    /**
+     * Returns 'A' if it is an all or nothing case, 'B' otherwise
+     *
+     * @param column -> entanglement is occurring in
+     * @param row    -> row first height in the entanglement
+     * @return 'A', 'B' or 'X' if index out of bound error
+     */
+    public char findEntanglementType(int column, int row) {
+        if (row == 7) {
+            System.out.println("OOPS INDEX OUT OF BOUNDS IN findEntanglementType");
+            return 'X';
+        }
+        String topPiece = board[row][column];
+        String bottomPiece = board[row + 1][column];
+        if ((bottomPiece.equals("PXX") && topPiece.equals("XXY"))
+                || (bottomPiece.equals("YXX") && topPiece.equals("XXP"))) {
+            {
+                return 'A';
+            }
+        } else {
+            return 'B';
+        }
+    }
+
+    /**
+     * Is entanglement occurring
+     */
+    public boolean isEntanglementOccurring() {
+        for (int y = 7; y > 1; y--) {
+            for (int x = 0; x < 7; x++) {
+                boolean isEntangled = (board[y][x].equals("PXX") && board[y - 1][x].equals("XXY")) ||
+                        (board[y][x].equals("PXX") && board[y - 1][x].equals("YXX")) ||
+                        (board[y][x].equals("YXX") && board[y - 1][x].equals("XXP")) ||
+                        (board[y][x].equals("XXY") && board[y - 1][x].equals("PXX"));
+                if (isEntangled) {
+                    return true;
+                }
             }
         }
+        return false;
     }
-    return false;
-}
+
+    public int[] findPiecesToMeasure() {
+        int indexToMeasure = this.moveStates.length() - 3;  // always measuring 3 spots back from the last character
+        int[] nothingToMeasure = {-1, -1, -1, -1};
+
+
+        if (indexToMeasure < 0) {
+            return nothingToMeasure;
+        }
+
+        if (this.moveStates.charAt(indexToMeasure) == 'C') {
+            return nothingToMeasure;
+        }
+
+        ArrayList<Integer> piecesToMeasure = new ArrayList<Integer>();
+        char state = this.moveStates.charAt(indexToMeasure);
+        int[] options = this.getIthCharacter(indexToMeasure);
+        int colorToLookFor = this.moveStates.length() % 2;
+
+        if (colorToLookFor == 1 && state == 'V') {
+            String target = "XXP";
+            piecesToMeasure.add(options[0]);
+            piecesToMeasure.add(this.findInColumn(target, options[0]));
+            piecesToMeasure.add(options[1]);
+            piecesToMeasure.add(this.findInColumn(target, options[1]));
+        } else if (colorToLookFor == 1 && state == 'H') {
+            String target = "PXX";
+            piecesToMeasure.add(options[0]);
+            piecesToMeasure.add(this.findInColumn(target, options[0]));
+            piecesToMeasure.add(options[1]);
+            piecesToMeasure.add(this.findInColumn(target, options[1]));
+        } else if (colorToLookFor == 0 && state == 'V') {
+            String target = "XXY";
+            piecesToMeasure.add(options[0]);
+            piecesToMeasure.add(this.findInColumn(target, options[0]));
+            piecesToMeasure.add(options[1]);
+            piecesToMeasure.add(this.findInColumn(target, options[1]));
+        } else if (colorToLookFor == 0 && state == 'H') {
+            String target = "YXX";
+            piecesToMeasure.add(options[0]);
+            piecesToMeasure.add(this.findInColumn(target, options[0]));
+            piecesToMeasure.add(options[1]);
+            piecesToMeasure.add(this.findInColumn(target, options[1]));
+        }
+
+        int[] returnValue = new int[piecesToMeasure.size()];
+        for (int i = 0; i < piecesToMeasure.size(); i++) {
+            returnValue[i] = piecesToMeasure.get(i);
+        }
+
+        return returnValue;
+
+
+    }
 
 }
