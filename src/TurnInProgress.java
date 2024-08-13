@@ -25,6 +25,8 @@ public class TurnInProgress {
         return column;
     }
 
+    public String getState() {return state;}
+
     public int getFirstPlacement() {
         return firstPlacement;
     }
