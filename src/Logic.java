@@ -542,7 +542,7 @@ public class Logic {
     public boolean noProppedPiece(int col, int row) {
         while (row < 8) {
             boolean isCertain =
-                    this.board[row][col].equals("PPP") || this.board[row][col].equals("YYY");
+                    board[row][col].equals("PPP") || board[row][col].equals("YYY");
             if (!isCertain) {
                 return false;
             }
@@ -558,12 +558,12 @@ public class Logic {
     public String checkColumns() {
         for (int y = 7; y > 4; y--) {
             for (int x = 0; x < 7; x++) {
-                String state = this.board[y][x];
+                String state = board[y][x];
                 boolean itsCertain = state.equals("PPP") || state.equals("YYY");
                 boolean thereIsAGroup =
-                        this.board[y][x].equals(this.board[y - 1][x]) &&
-                        this.board[y][x].equals(this.board[y - 2][x]) &&
-                        this.board[y][x].equals(this.board[y - 3][x]);
+                        board[y][x].equals(board[y - 1][x]) &&
+                        board[y][x].equals(board[y - 2][x]) &&
+                        board[y][x].equals(board[y - 3][x]);
                 if (thereIsAGroup && itsCertain) {
                     return state;
                 }
@@ -579,17 +579,17 @@ public class Logic {
     public String checkRows() {
         for (int y = 7; y > 1; y--) {
             for (int x = 0; x < 4; x++) {
-                String state = this.board[y][x];
+                String state = board[y][x];
                 boolean itsCertain = state.equals("PPP") || state.equals("YYY");
                 boolean thereIsAGroup =
-                        this.board[y][x].equals(this.board[y][x + 1]) &&
-                        this.board[y][x].equals(this.board[y][x + 2]) &&
-                        this.board[y][x].equals(this.board[y][x + 3]);
+                        board[y][x].equals(board[y][x + 1]) &&
+                        board[y][x].equals(board[y][x + 2]) &&
+                        board[y][x].equals(board[y][x + 3]);
                 boolean noProppedPieces =
-                        this.noProppedPiece(x, y + 1) &&
-                                this.noProppedPiece(x + 1, y + 1) &&
-                                this.noProppedPiece(x + 2, y + 1) &&
-                                this.noProppedPiece(x + 3, y + 1);
+                        noProppedPiece(x, y + 1) &&
+                                noProppedPiece(x + 1, y + 1) &&
+                                noProppedPiece(x + 2, y + 1) &&
+                                noProppedPiece(x + 3, y + 1);
                 if (thereIsAGroup && itsCertain && noProppedPieces) {
                     return state;
                 }
@@ -597,6 +597,60 @@ public class Logic {
         }
         return "XXX";
     }
+
+    /**
+     * Checks for ascending diagonal groups on the board. In the process it checks for propped pieces
+     * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
+     */
+    public String checkAscendingDiagonals() {
+        for (int y = 7; y > 4; y--) {
+            for (int x = 0; x < 4; x++) {
+                String state = this.board[y][x];
+                boolean itsCertain = state.equals("PPP") || state.equals("YYY");
+                boolean thereIsAGroup =
+                        board[y][x].equals(board[y - 1][x + 1]) &&
+                        board[y][x].equals(board[y - 2][x + 2]) &&
+                        board[y][x].equals(board[y - 3][x + 3]);
+                boolean noProppedPieces =
+                        noProppedPiece(x, y + 1) &&
+                                noProppedPiece(x + 1, y) &&
+                                noProppedPiece(x + 2, y - 1) &&
+                                noProppedPiece(x + 3, y - 2);
+                if (thereIsAGroup && itsCertain && noProppedPieces) {
+                    return state;
+                }
+            }
+        }
+        return "XXX";
+    }
+
+    /**
+     * Checks for descending diagonal groups on the board. In the process it checks for propped pieces
+     * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
+     */
+    public String checkDescendingDiagonals() {
+        for (int y = 2; y < 5; y++) {
+            for (int x = 0; x < 4; x++) {
+                String state = board[y][x];
+                boolean itsCertain = state.equals("PPP") || state.equals("YYY");
+                boolean thereIsAGroup =
+                        board[y][x].equals(board[y + 1][x + 1]) &&
+                        board[y][x].equals(board[y + 2][x + 2]) &&
+                        board[y][x].equals(board[y + 3][x + 3]);
+                boolean noProppedPieces =
+                        this.noProppedPiece(x, y + 1) &&
+                                this.noProppedPiece(x + 1, y + 2) &&
+                                this.noProppedPiece(x + 2, y + 3) &&
+                                this.noProppedPiece(x + 3, y + 4);
+                if (thereIsAGroup && itsCertain && noProppedPieces) {
+                    return state;
+                }
+            }
+        }
+        return "XXX";
+    }
+
     
+
 
 }
