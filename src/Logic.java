@@ -43,6 +43,10 @@ public class Logic {
         return winner;
     }
 
+    public TurnInProgress getTurnInProgress(){
+        return turnInProgress;
+    }
+
     public void setBoard(String[][] board) {
         this.board = board;
     }
@@ -815,11 +819,23 @@ public class Logic {
         return "done";
     }
 
-    public TurnInProgress getTurnInProgress() {
-        return turnInProgress;
+    public void printBoard(){
+        for (int y = 0; y < HEIGHT; y++){
+            for (int x = 0; x < WIDTH; x++){
+                System.out.print(board[y][x]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for (String[] row : board){
+            for (String entry : row){
+                System.out.print(entry);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
     }
-
-    public void printBoard() {
 
     }
 }
