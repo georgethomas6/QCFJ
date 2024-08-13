@@ -706,8 +706,114 @@ public class Logic {
         }
     }
 
+    /**
+     * If a vertical piece has not been placed during the turn, this function temporarily places a vertical piece
+     * at the appropriate location above the board. Otherwise, it gets rid of the temporary piece and drops the pieces
+     * to the correct depths. Should only be called on valid moves.
+     * @return "done" if the turn is over, "notDone" otherwise
+     */
+    public String placeVerticalPiece(){
+        int column = turnInProgress.getColumn();
+        int firstPlacement = turnInProgress.getFirstPlacement();
+        if (firstPlacement == -1){
+            if (turnInProgress.getColor().equals("purple")){
+                board[turnInProgressDepth(column)][column] = "XXP";
+            } else {
+                board[turnInProgressDepth(column)][column] = "XXY";
+            }
+            turnInProgress.setFirstPlacement(column);
+            turnInProgress.setCanModifyState(false);
+            turnInProgress.setColumn((column + 1) % 7);
+            return "notDone";
+        }
 
+        board[firstOpenRow(board, firstPlacement) + 1][firstPlacement] = "XXX";
+        setMoveStates(moveStates.concat("V"));
+        updateGameState(firstPlacement, column);
+        gameStateToBoard();
+        handleEntanglement(firstPlacement, column);
+        gameStateToBoard();
+        return "done";
+    }
 
+    /*
+     * First this function checks to see if the placement is valid. If the placement was valid it places a piece in the correct state on the board.
+     * @returns "done" if the turn is over, if not it returns "notDone"
+     */
+    public String place() {
+        int column = turnInProgress.getColumn();
+        int row = this.firstOpenRow(board, column);
+        String state = turnInProgress.getState();
+        int firstPlacement = turnInProgress.getFirstPlacement();
+        boolean validClassicMove = state.equals("certain") && row >= 2;
+        boolean validQuantumMove =
+                !state.equals("certain") &&
+                        row >= 2 &&
+                        firstPlacement != column &&
+                        !board[2][column].equals("PPP") &&
+                !board[2][column].equals("YYY");
+        if (state.equals("certain") && validClassicMove) {
+            return this.placeCertainPiece();
+        } else if (state.equals("horizontal") && validQuantumMove) {
+            return this.placeHorizontalPiece();
+        } else if (state.equals("vertical") && validQuantumMove) {
+            return this.placeVerticalPiece();
+        }
+        return "notDone";
+    }
+
+    /**
+     * Places a certain piece on the board. Should only be called on valid moves.
+     * @returns "done"
+     */
+    public String placeCertainPiece() {
+        int column = turnInProgress.getColumn();
+        this.updateGameState(column, column);
+        moveStates = moveStates.concat("C");
+        this.gameStateToBoard();
+        return "done";
+    }
+
+    /**
+     * This function calculates the height at which a turnInProgress should be drawnx
+     * @return (int) depth
+     */
+    public int turnInProgressDepth(int column) {
+        int firstOpenRow = this.firstOpenRow(board, column);
+        return firstOpenRow >= 2 ? 1 : firstOpenRow;
+    }
+
+   
+
+    /**
+     * If a horizontal piece has not been placed during the turn, this function temporarily places a horizontal piece
+     * at the appropriate location above the board. Otherwise, it gets rid of the temporary piece and drops the pieces
+     * to the correct depths. Should only be called on valid moves.
+     * @return "done" if the turn is over, "notDone" otherwise
+     */
+    public String placeVerticalPiece(){
+        int column = turnInProgress.getColumn();
+        int firstPlacement = turnInProgress.getFirstPlacement();
+        if (firstPlacement == -1){
+            if (turnInProgress.getColor().equals("purple")){
+                board[turnInProgressDepth(column)][column] = "PXX";
+            } else {
+                board[turnInProgressDepth(column)][column] = "YXX";
+            }
+            turnInProgress.setFirstPlacement(column);
+            turnInProgress.setCanModifyState(false);
+            turnInProgress.setColumn((column + 1) % 7);
+            return "notDone";
+        }
+
+        board[firstOpenRow(board, firstPlacement) + 1][firstPlacement] = "XXX";
+        setMoveStates(moveStates.concat("H"));
+        updateGameState(firstPlacement, column);
+        gameStateToBoard();
+        handleEntanglement(firstPlacement, column);
+        gameStateToBoard();
+        return "done";
+    }
 
 
 }
