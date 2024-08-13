@@ -775,7 +775,7 @@ public class Logic {
     }
 
     /**
-     * This function calculates the height at which a turnInProgress should be drawnx
+     * This function calculates the height at which a turnInProgress should be drawn
      * @return (int) depth
      */
     public int turnInProgressDepth(int column) {
@@ -791,7 +791,7 @@ public class Logic {
      * to the correct depths. Should only be called on valid moves.
      * @return "done" if the turn is over, "notDone" otherwise
      */
-    public String placeVerticalPiece(){
+    public String placeHorizontalPiece(){
         int column = turnInProgress.getColumn();
         int firstPlacement = turnInProgress.getFirstPlacement();
         if (firstPlacement == -1){
@@ -815,5 +815,11 @@ public class Logic {
         return "done";
     }
 
+    public TurnInProgress getTurnInProgress() {
+        return turnInProgress;
+    }
 
+    public void printBoard() {
+
+    }
 }
