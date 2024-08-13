@@ -20,7 +20,24 @@ class mainTest {
     public void testPlace(){
 
     }
-    
+
+    @Test
+    public void testPlaceCertain(){
+         logic.placeCertainPiece();
+         String[][] shouldEqual = {
+                 {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                 {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                 {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                 {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                 {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                 {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                 {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                 {"XXX", "XXX", "XXX", "PPP", "XXX", "XXX", "XXX"},
+         };
+         logic.printBoard();
+         assertArrayEquals(logic.getBoard(), shouldEqual);
+    }
+
     @Test
     public void testFindInColumn(){
         assertEquals(logic.findInColumn("PXX", 0), -1);
