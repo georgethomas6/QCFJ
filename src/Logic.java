@@ -43,6 +43,10 @@ public class Logic {
         return winner;
     }
 
+    public TurnInProgress getTurnInProgress(){
+        return turnInProgress;
+    }
+
     public void setBoard(String[][] board) {
         this.board = board;
     }
@@ -775,7 +779,7 @@ public class Logic {
     }
 
     /**
-     * This function calculates the height at which a turnInProgress should be drawnx
+     * This function calculates the height at which a turnInProgress should be drawn
      * @return (int) depth
      */
     public int turnInProgressDepth(int column) {
@@ -791,7 +795,7 @@ public class Logic {
      * to the correct depths. Should only be called on valid moves.
      * @return "done" if the turn is over, "notDone" otherwise
      */
-    public String placeVerticalPiece(){
+    public String placeHorizontalPiece(){
         int column = turnInProgress.getColumn();
         int firstPlacement = turnInProgress.getFirstPlacement();
         if (firstPlacement == -1){
@@ -813,6 +817,24 @@ public class Logic {
         handleEntanglement(firstPlacement, column);
         gameStateToBoard();
         return "done";
+    }
+
+    public void printBoard(){
+        for (int y = 0; y < HEIGHT; y++){
+            for (int x = 0; x < WIDTH; x++){
+                System.out.print(board[y][x]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for (String[] row : board){
+            for (String entry : row){
+                System.out.print(entry);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
     }
 
 
