@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -362,10 +363,10 @@ public class Logic {
      * This function finds the pieces on the board that need to be measured, and filters
      * the gameStates depending on what kind of measurement needs to occur.
      */
-    public void measure(){
+    public void measure() {
         //Return if there is nothing to measure
         int[] piecesToMeasure = findPiecesToMeasure();
-        if (piecesToMeasure[0] == -1){
+        if (piecesToMeasure[0] == -1) {
             return;
         }
         int indexToMeasure = moveStates.length() - 3;
@@ -376,40 +377,40 @@ public class Logic {
         boolean isEntangled = isEntanglementOccurring();
         ArrayList<String> newGameState = new ArrayList<>();
         String newMoveStates = "";
-        if (isEntangled){
+        if (isEntangled) {
             char lastMoveState = moveStates.charAt(indexToMeasure);
-            if (lastMoveState == 'C'){
+            if (lastMoveState == 'C') {
                 int newChoice = random.nextInt() % gameState.size();
                 newGameState.add(gameState.get(newChoice));
                 setGameState(newGameState);
-                for (int i = 0; i < moveStates.length(); i++){
+                for (int i = 0; i < moveStates.length(); i++) {
                     newMoveStates = newMoveStates.concat("C");
                 }
                 setMoveStates(newMoveStates);
                 return;
             }
 
-            for (String game : gameState){
-                if (game.charAt(indexToMeasure) == chosenColumn){
+            for (String game : gameState) {
+                if (game.charAt(indexToMeasure) == chosenColumn) {
                     newGameState.add(game);
                 }
             }
             setGameState(newGameState);
-            for (int t = 0; t < moveStates.length() - 1; t++){
+            for (int t = 0; t < moveStates.length() - 1; t++) {
                 newMoveStates = newMoveStates.concat("C");
             }
-            newMoveStates = newMoveStates.concat(String.valueOf(moveStates.charAt(moveStates.length() -1)));
+            newMoveStates = newMoveStates.concat(String.valueOf(moveStates.charAt(moveStates.length() - 1)));
             setMoveStates(newMoveStates);
             return;
         }
 
-        for (String game : gameState){
-            if (game.charAt(indexToMeasure) == chosenColumn){
+        for (String game : gameState) {
+            if (game.charAt(indexToMeasure) == chosenColumn) {
                 newGameState.add(game);
             }
         }
 
-        for (int i = 0; i < moveStates.length() - 2; i++){
+        for (int i = 0; i < moveStates.length() - 2; i++) {
             newMoveStates = newMoveStates.concat("C");
         }
 
@@ -422,6 +423,7 @@ public class Logic {
     /**
      * This function returns a list containing the x and y position if we need to entangle.
      * It returns an empty list otherwise.
+     *
      * @return List containing [x, y] or an empty list [-1]
      */
     public ArrayList<Integer> doWeNeedToEntangle(int firstPlacement, int secondPlacement) {
@@ -492,5 +494,109 @@ public class Logic {
         return returnValue;
     }
 
+    /**
+     * This function filters the game states if entanglement should occur. Should be called at the end of placing a vertical or horizontal piece.
+     *
+     * @param firstPlacement  -> where the first half of the superposition was placed
+     * @param secondPlacement -> where the second half of the superposition was placed
+     */
+    public void handleEntanglement(int firstPlacement, int secondPlacement) {
+        ArrayList<Integer> doWeNeedToEntangle = doWeNeedToEntangle(firstPlacement, secondPlacement);
+        boolean isEntanglementOccurring = doWeNeedToEntangle.isEmpty();
+        if (!isEntanglementOccurring) {
+            int[] placeOfEntanglement = new int[doWeNeedToEntangle.size()];
+            int i = 0;
+            for (int num : doWeNeedToEntangle) {
+                placeOfEntanglement[i] = num;
+                i++;
+            }
+            char entanglementType = findEntanglementType(placeOfEntanglement[0], placeOfEntanglement[1]);
+            char repeatedChar = findRepeatedChar();
+            int superPositionIndex = moveStates.length() - 1;
+            ArrayList<String> newGameState = new ArrayList<>();
+            if (entanglementType == 'A') {
+                for (String game : gameState) {
+                    if ((game.charAt(superPositionIndex) == repeatedChar && game.charAt(superPositionIndex - 1) == repeatedChar) ||
+                            (game.charAt(superPositionIndex) != repeatedChar && game.charAt(superPositionIndex - 1) != repeatedChar)) {
+                        newGameState.add(game);
+                    }
+                }
+            } else if (entanglementType == 'B') {
+                for (String game : gameState) {
+                    if (!((game.charAt(superPositionIndex) == repeatedChar && game.charAt(superPositionIndex - 1) == repeatedChar) ||
+                            (game.charAt(superPositionIndex) != repeatedChar && game.charAt(superPositionIndex - 1) != repeatedChar))) {
+                        newGameState.add(game);
+                    }
+                }
+            }
+            setGameState(newGameState);
+        }
+    }
+
+
+    /**
+     * Checks for an uncertain piece under the top piece played in a given column.
+     * @returns true if there are no uncertain pieces in the given column, false otherwise
+     */
+
+    public boolean noProppedPiece(int col, int row) {
+        while (row < 8) {
+            boolean isCertain =
+                    this.board[row][col].equals("PPP") || this.board[row][col].equals("YYY");
+            if (!isCertain) {
+                return false;
+            }
+            row++;
+        }
+        return false;
+    }
+
+    /**
+     * This function checks every single column for a group. No need to check for propped pieces here
+     * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
+     */
+    public String checkColumns() {
+        for (int y = 7; y > 4; y--) {
+            for (int x = 0; x < 7; x++) {
+                String state = this.board[y][x];
+                boolean itsCertain = state.equals("PPP") || state.equals("YYY");
+                boolean thereIsAGroup =
+                        this.board[y][x].equals(this.board[y - 1][x]) &&
+                        this.board[y][x].equals(this.board[y - 2][x]) &&
+                        this.board[y][x].equals(this.board[y - 3][x]);
+                if (thereIsAGroup && itsCertain) {
+                    return state;
+                }
+            }
+        }
+        return "XXX";
+    }
+
+    /**
+     * This function checks every single row for a group. In the process it makes sure no member of the group is being propped up by an uncertain piece
+     * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
+     */
+    public String checkRows() {
+        for (int y = 7; y > 1; y--) {
+            for (int x = 0; x < 4; x++) {
+                String state = this.board[y][x];
+                boolean itsCertain = state.equals("PPP") || state.equals("YYY");
+                boolean thereIsAGroup =
+                        this.board[y][x].equals(this.board[y][x + 1]) &&
+                        this.board[y][x].equals(this.board[y][x + 2]) &&
+                        this.board[y][x].equals(this.board[y][x + 3]);
+                boolean noProppedPieces =
+                        this.noProppedPiece(x, y + 1) &&
+                                this.noProppedPiece(x + 1, y + 1) &&
+                                this.noProppedPiece(x + 2, y + 1) &&
+                                this.noProppedPiece(x + 3, y + 1);
+                if (thereIsAGroup && itsCertain && noProppedPieces) {
+                    return state;
+                }
+            }
+        }
+        return "XXX";
+    }
+    
 
 }
