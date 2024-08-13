@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Random;
 
 public class Logic {
     final private int HEIGHT = 8;
@@ -355,9 +356,68 @@ public class Logic {
         }
 
         return returnValue;
-
-
     }
+
+    /**
+     * This function finds the pieces on the board that need to be measured, and filters
+     * the gameStates depending on what kind of measurement needs to occur.
+     */
+    public void measure(){
+        //Return if there is nothing to measure
+        int[] piecesToMeasure = findPiecesToMeasure();
+        if (piecesToMeasure[0] == -1){
+            return;
+        }
+        int indexToMeasure = moveStates.length() - 3;
+        Random random = new Random();
+        int choice = random.nextInt() % 2;
+        int[] ithCharacters = getIthCharacter(indexToMeasure);
+        int chosenColumn = choice == 0 ? ithCharacters[0] : ithCharacters[1];
+        boolean isEntangled = isEntanglementOccurring();
+        ArrayList<String> newGameState = new ArrayList<>();
+        String newMoveStates = "";
+        if (isEntangled){
+            char lastMoveState = moveStates.charAt(indexToMeasure);
+            if (lastMoveState == 'C'){
+                int newChoice = random.nextInt() % gameState.size();
+                newGameState.add(gameState.get(newChoice));
+                setGameState(newGameState);
+                for (int i = 0; i < moveStates.length(); i++){
+                    newMoveStates = newMoveStates.concat("C");
+                }
+                setMoveStates(newMoveStates);
+                return;
+            }
+
+            for (String game : gameState){
+                if (game.charAt(indexToMeasure) == chosenColumn){
+                    newGameState.add(game);
+                }
+            }
+            setGameState(newGameState);
+            for (int t = 0; t < moveStates.length() - 1; t++){
+                newMoveStates = newMoveStates.concat("C");
+            }
+            newMoveStates = newMoveStates.concat(String.valueOf(moveStates.charAt(moveStates.length() -1)));
+            setMoveStates(newMoveStates);
+            return;
+        }
+
+        for (String game : gameState){
+            if (game.charAt(indexToMeasure) == chosenColumn){
+                newGameState.add(game);
+            }
+        }
+
+        for (int i = 0; i < moveStates.length() - 2; i++){
+            newMoveStates = newMoveStates.concat("C");
+        }
+
+        newMoveStates = newMoveStates.concat(String.valueOf(moveStates.charAt(moveStates.length() - 2)));
+        newMoveStates = newMoveStates.concat(String.valueOf(moveStates.charAt(moveStates.length() - 1)));
+        setMoveStates(newMoveStates);
+    }
+
 
     /**
      * This function returns a list containing the x and y position if we need to entangle.
@@ -431,5 +491,6 @@ public class Logic {
 
         return returnValue;
     }
+
 
 }
