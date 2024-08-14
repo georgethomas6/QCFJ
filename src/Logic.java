@@ -308,6 +308,10 @@ public class Logic {
         return false;
     }
 
+    /**
+     * This function tries to find pieces who need to be measured. It returns an array of -1's if no pieces need to be measured.
+     * @returns [x1, y1, x2, y2] or [-1, -1, -1, -1]
+     */
     public int[] findPiecesToMeasure() {
         int indexToMeasure = moveStates.length() - 3;  // always measuring 3 spots back from the last character
         int[] nothingToMeasure = {-1, -1, -1, -1};
@@ -321,7 +325,7 @@ public class Logic {
             return nothingToMeasure;
         }
 
-        ArrayList<Integer> piecesToMeasure = new ArrayList<Integer>();
+        ArrayList<Integer> piecesToMeasure = new ArrayList<>();
         char state = moveStates.charAt(indexToMeasure);
         int[] options = getIthCharacter(indexToMeasure);
         int colorToLookFor = moveStates.length() % 2;
