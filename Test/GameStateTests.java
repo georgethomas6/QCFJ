@@ -31,5 +31,26 @@ public class GameStateTests {
                 {"XXX", "XXX", "XXX", "PPP", "PPP", "XXX", "YXX"},
         };
         assertArrayEquals(logic.getBoard(), firstAssertion);
+        newGameStates.clear();
+        newGameStates.add("4436");
+        newGameStates.add("4431");
+        newGameStates.add("4636");
+        newGameStates.add("4631");
+        logic.setMoveStates("CHCV");
+        logic.gameStateToBoard();
+
+        String[][] secondAssertion = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "YXX", "XXX", "XXY"},
+                {"XXX", "XXY", "XXX", "PPP", "PPP", "XXX", "YXX"},
+        };
+
+        assertArrayEquals(logic.getBoard(), secondAssertion);
+
     }
 }
