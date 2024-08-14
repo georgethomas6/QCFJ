@@ -1,9 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class entanglementTests {
     private Logic logic;
@@ -34,6 +33,74 @@ public class entanglementTests {
     }
 
     @Test
+    public void testisEntanglementOccurring(){
+        ArrayList<String> newGameStates = new ArrayList<>();
+        newGameStates.add("44");
+        newGameStates.add("36");
+        newGameStates.add("46");
+        newGameStates.add("34");
+        logic.setMoveStates("HV");
+        logic.setGameState(newGameStates);
+        logic.gameStateToBoard();
+        assertTrue(logic.isEntanglementOccurring());
+
+        logic.setMoveStates("HH");
+        logic.gameStateToBoard();
+        assertFalse(logic.isEntanglementOccurring());
+
+        newGameStates.clear();
+        newGameStates.add("3654");
+        newGameStates.add("3641");
+        newGameStates.add("3651");
+        newGameStates.add("3644");
+        logic.setMoveStates("CCVH");
+        logic.setGameState(newGameStates);
+        logic.gameStateToBoard();
+        logic.printBoard();
+        assertTrue(logic.isEntanglementOccurring());
+    }
+
+
+    @Test
+    public void testHandleEntanglement(){
+        ArrayList<String> expected = new ArrayList<>();
+        expected.add("22");
+        expected.add("33");
+        logic.updateGameState(2, 3);
+        logic.updateGameState(2, 3);
+        logic.setMoveStates("HV");
+        logic.gameStateToBoard();
+        logic.handleEntanglement(2, 3);
+        assertEquals(logic.getGameState(), expected);
+        expected.clear();
+
+        logic.setGameState(new ArrayList<String>());
+        logic.updateGameState(2, 3);
+        logic.updateGameState(2, 3);
+        expected.add("23");
+        expected.add("32");
+        logic.setMoveStates("VH");
+        logic.gameStateToBoard();
+        logic.handleEntanglement(2, 3);
+        assertEquals(logic.getGameState(), expected);
+        expected.clear();
+
+        logic.setGameState(new ArrayList<String>());
+        logic.updateGameState(1, 1);
+        logic.updateGameState(2, 1);
+        logic.updateGameState(6, 2);
+        logic.setMoveStates("CVH");
+        logic.gameStateToBoard();
+        logic.handleEntanglement(6, 2);
+        expected.add("126");
+        expected.add("112");
+        assertEquals(logic.getGameState(), expected);
+    }
+
+
+
+    
+
     public void testFindEntanglementType() {
         ArrayList<String> newGameStates = new ArrayList<>();
         newGameStates.add("23");
@@ -91,7 +158,6 @@ public class entanglementTests {
         ArrayList<Integer> expect = new ArrayList<>(Arrays.asList(2, 6));
         assertEquals(expect, logic.doWeNeedToEntangle(2, 3));
     }
-
 
 
 }

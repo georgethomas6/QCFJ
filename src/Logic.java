@@ -297,7 +297,7 @@ public class Logic {
         for (int y = 7; y > 1; y--) {
             for (int x = 0; x < 7; x++) {
                 boolean isEntangled = (board[y][x].equals("PXX") && board[y - 1][x].equals("XXY")) ||
-                        (board[y][x].equals("PXX") && board[y - 1][x].equals("YXX")) ||
+                        (board[y][x].equals("XXP") && board[y - 1][x].equals("YXX")) ||
                         (board[y][x].equals("YXX") && board[y - 1][x].equals("XXP")) ||
                         (board[y][x].equals("XXY") && board[y - 1][x].equals("PXX"));
                 if (isEntangled) {
@@ -834,14 +834,7 @@ public class Logic {
             System.out.println();
         }
 
-        System.out.println();
-        for (String[] row : board) {
-            for (String entry : row) {
-                System.out.print(entry);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
+
 
 
     }
