@@ -51,6 +51,19 @@ public class GameStateTests {
         };
 
         assertArrayEquals(logic.getBoard(), secondAssertion);
-
     }
+
+    @Test
+    public void testUpdateGameState(){
+        logic.updateGameState(2, 2);
+        ArrayList<String> expectedGameState = new ArrayList<>();
+        expectedGameState.add("2");
+        assertEquals(logic.getGameState(), expectedGameState);
+        logic.updateGameState(4, 6);
+        expectedGameState.clear();
+        expectedGameState.add("24");
+        expectedGameState.add("26");
+        assertEquals(logic.getGameState(), expectedGameState);
+    }
+
 }
