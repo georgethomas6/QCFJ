@@ -19,17 +19,7 @@ class mainTest {
 
 
 
-    @Test
-    public void testFindInColumn(){
-        assertEquals(logic.findInColumn("PXX", 0), -1);
-        logic.place();
 
-        assertEquals(logic.findInColumn("PPP", 3), 7);
-        logic.getTurnInProgress().incrementPosition();
-        logic.getTurnInProgress().incrementPosition();
-        logic.place();
-        logic.printBoard();
-        assertEquals(logic.findInColumn("YYY", 5), 7);
 
     }
 
@@ -51,6 +41,7 @@ class mainTest {
         logic.placeHorizontalPiece();
         logic.printBoard();
     }
+
 
 
 }

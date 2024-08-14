@@ -157,7 +157,7 @@ public class Logic {
     public String[][] initBlankBoard() {
         String[][] board = new String[HEIGHT][WIDTH];
         for (int y = 0; y < HEIGHT; y++) {
-            board[y] = new String[] {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"};
+            board[y] = new String[]{"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"};
         }
         return board;
     }
