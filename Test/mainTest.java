@@ -21,5 +21,27 @@ class mainTest {
 
 
 
+    }
+
+    @Test
+    public void testTurnInProgressDepth() {
+
+        assertEquals(1, logic.turnInProgressDepth(3));
+        logic.place();
+        logic.place();
+        assertEquals(1, logic.turnInProgressDepth(0));
+        logic.place();
+        logic.place();
+        logic.place();
+        logic.place();
+        logic.place();
+        logic.place();
+        logic.placeHorizontalPiece();
+        assertEquals(0, logic.turnInProgressDepth(3));
+        logic.placeHorizontalPiece();
+        logic.printBoard();
+    }
+
+
 
 }
