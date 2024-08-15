@@ -136,4 +136,37 @@ public class helperTests {
         logic.setBoard(secondAssertion);
         assertEquals("PPP", logic.checkDescendingDiagonals());
     }
+
+    @Test
+    public void testCheckColumns() {
+        ArrayList<String> newGameState = new ArrayList<>();
+        String[][] board = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "PPP"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "PPP"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "PPP"},
+                {"XXX", "XXX", "XXX", "PPP", "YYY", "XXX", "PPP"},
+                {"XXX", "XXX", "XXX", "PPP", "YYY", "XXX", "YYY"},
+                {"XXX", "XXX", "XXX", "PPP", "YYY", "XXX", "PPP"},
+        };
+        logic.setBoard(board);
+        assertEquals("PPP", logic.checkColumns());
+    }
+
+    @Test
+    public void testCheckAscendingDiagonals() {
+        String[][] board = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "YYY"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "YYY", "PPP"},
+                {"XXX", "XXX", "XXX", "XXX", "YYY", "PPP", "YYY"},
+                {"XXX", "XXX", "XXX", "YYY", "PPP", "YYY", "PPP"},
+        };
+        logic.setBoard(board);
+        assertEquals("YYY", logic.checkAscendingDiagonals());
+    }
 }
