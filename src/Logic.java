@@ -554,7 +554,7 @@ public class Logic {
             }
             row++;
         }
-        return false;
+        return true;
     }
 
     /**
