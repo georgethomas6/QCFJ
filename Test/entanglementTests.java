@@ -56,7 +56,6 @@ public class entanglementTests {
         logic.setMoveStates("CCVH");
         logic.setGameState(newGameStates);
         logic.gameStateToBoard();
-        logic.printBoard();
         assertTrue(logic.isEntanglementOccurring());
     }
 
@@ -101,6 +100,7 @@ public class entanglementTests {
 
     
 
+    @Test
     public void testFindEntanglementType() {
         ArrayList<String> newGameStates = new ArrayList<>();
         newGameStates.add("23");
@@ -158,6 +158,8 @@ public class entanglementTests {
         ArrayList<Integer> expect = new ArrayList<>(Arrays.asList(2, 6));
         assertEquals(expect, logic.doWeNeedToEntangle(2, 3));
     }
+
+
 
 
 }
