@@ -40,6 +40,133 @@ public class helperTests {
         newGameState.add("337");
         int[] IthChars = {2, 3, 7};
         assertArrayEquals(logic.getIthCharacter(2), IthChars);
+    }
 
+    @Test
+    public void testProppedPieces(){
+        String[][] firstAssertion = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "YYY"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "YYY", "PPP"},
+                {"XXX", "XXX", "XXX", "XXX", "YYY", "PPP", "YYY"},
+                {"XXX", "XXX", "XXX", "YYY", "PPP", "PPP", "PPP"},
+        };
+        logic.setBoard(firstAssertion);
+        assertTrue(logic.noProppedPiece(3, 7));
+        assertTrue(logic.noProppedPiece(4, 6));
+        assertTrue(logic.noProppedPiece(5, 5));
+        assertTrue(logic.noProppedPiece(6, 4));
+
+    }
+
+    @Test
+    public void testCheckRows(){
+        String[][] firstAssertion = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "PPP", "PPP", "PPP", "PPP"},
+        };
+        logic.setBoard(firstAssertion);
+        assertEquals("PPP", logic.checkRows());
+
+        String[][] secondAssertion = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "PPP", "XXX", "PPP", "PPP"},
+        };
+        logic.setBoard(secondAssertion);
+        assertEquals("XXX", logic.checkRows());
+
+        String[][] thirdAssertion = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"YYY", "YYY", "YYY", "YYY", "XXX", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+        };
+
+        logic.setBoard(thirdAssertion);
+        assertEquals("YYY", logic.checkRows());
+    }
+
+    @Test
+    public void testCheckDescending(){
+        String[][] firstAssertion = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"YYY", "YYY", "YYY", "YYY", "XXX", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "YYY", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "YYY", "YYY", "PPP", "PPP"},
+        };
+        logic.setBoard(firstAssertion);
+        assertEquals("YYY", logic.checkDescendingDiagonals());
+
+
+        String[][] secondAssertion = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"YYY", "YYY", "YYY", "PPP", "XXX", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "PPP", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "YYY", "YYY", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "PPP", "PPP", "YYY", "PPP", "PPP"},
+                {"YYY", "PPP", "YYY", "YYY", "YYY", "PPP", "PPP"},
+        };
+
+
+        logic.setBoard(secondAssertion);
+        assertEquals("PPP", logic.checkDescendingDiagonals());
+    }
+
+    @Test
+    public void testCheckColumns() {
+        ArrayList<String> newGameState = new ArrayList<>();
+        String[][] board = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "PPP"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "PPP"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "PPP"},
+                {"XXX", "XXX", "XXX", "PPP", "YYY", "XXX", "PPP"},
+                {"XXX", "XXX", "XXX", "PPP", "YYY", "XXX", "YYY"},
+                {"XXX", "XXX", "XXX", "PPP", "YYY", "XXX", "PPP"},
+        };
+        logic.setBoard(board);
+        assertEquals("PPP", logic.checkColumns());
+    }
+
+    @Test
+    public void testCheckAscendingDiagonals() {
+        String[][] board = {
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "XXX"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "XXX", "YYY"},
+                {"XXX", "XXX", "XXX", "XXX", "XXX", "YYY", "PPP"},
+                {"XXX", "XXX", "XXX", "XXX", "YYY", "PPP", "YYY"},
+                {"XXX", "XXX", "XXX", "YYY", "PPP", "YYY", "PPP"},
+        };
+        logic.setBoard(board);
+        assertEquals("YYY", logic.checkAscendingDiagonals());
     }
 }

@@ -310,6 +310,7 @@ public class Logic {
 
     /**
      * This function tries to find pieces who need to be measured. It returns an array of -1's if no pieces need to be measured.
+     *
      * @returns [x1, y1, x2, y2] or [-1, -1, -1, -1]
      */
     public int[] findPiecesToMeasure() {
@@ -364,6 +365,16 @@ public class Logic {
         return returnValue;
     }
 
+    public int getNumOfOpenColumns() {
+        int ret = 0;
+        for (int x = 0; x < WIDTH; x++) {
+            if (!board[2][x].equals("PPP") && !board[2][x].equals("YYY")) {
+                ret++;
+            }
+        }
+        return ret;
+    }
+
     /**
      * This function finds the pieces on the board that need to be measured, and filters
      * the gameStates depending on what kind of measurement needs to occur.
@@ -378,7 +389,7 @@ public class Logic {
         Random random = new Random();
         int choice = random.nextInt() % 2;
         int[] ithCharacters = getIthCharacter(indexToMeasure);
-        int chosenColumn = choice == 0 ? ithCharacters[0] : ithCharacters[1];
+        int chosenColumn = choice == 0 ? ithCharacters[0] + 48 : ithCharacters[1] + 48;
         boolean isEntangled = isEntanglementOccurring();
         ArrayList<String> newGameState = new ArrayList<>();
         String newMoveStates = "";
@@ -422,6 +433,7 @@ public class Logic {
         newMoveStates = newMoveStates.concat(String.valueOf(moveStates.charAt(moveStates.length() - 2)));
         newMoveStates = newMoveStates.concat(String.valueOf(moveStates.charAt(moveStates.length() - 1)));
         setMoveStates(newMoveStates);
+        setGameState(newGameState);
     }
 
 
@@ -554,7 +566,7 @@ public class Logic {
             }
             row++;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -572,6 +584,7 @@ public class Logic {
                                 board[y][x].equals(board[y - 2][x]) &&
                                 board[y][x].equals(board[y - 3][x]);
                 if (thereIsAGroup && itsCertain) {
+                    this.winner = state;
                     return state;
                 }
             }
@@ -599,6 +612,7 @@ public class Logic {
                                 noProppedPiece(x + 2, y + 1) &&
                                 noProppedPiece(x + 3, y + 1);
                 if (thereIsAGroup && itsCertain && noProppedPieces) {
+                    this.winner = state;
                     return state;
                 }
             }
@@ -608,11 +622,10 @@ public class Logic {
 
     /**
      * Checks for ascending diagonal groups on the board. In the process it checks for propped pieces
-     *
      * @returns "PPP" if there is a purple group, "YYY" if there is a yellow group, and "XXX" if there is not a group
      */
     public String checkAscendingDiagonals() {
-        for (int y = 7; y > 4; y--) {
+        for (int y = 6; y > 4; y--) {
             for (int x = 0; x < 4; x++) {
                 String state = board[y][x];
                 boolean itsCertain = state.equals("PPP") || state.equals("YYY");
@@ -621,11 +634,12 @@ public class Logic {
                                 board[y][x].equals(board[y - 2][x + 2]) &&
                                 board[y][x].equals(board[y - 3][x + 3]);
                 boolean noProppedPieces =
-                        noProppedPiece(x, y + 1) &&
+                                noProppedPiece(x, y + 1) &&
                                 noProppedPiece(x + 1, y) &&
                                 noProppedPiece(x + 2, y - 1) &&
                                 noProppedPiece(x + 3, y - 2);
                 if (thereIsAGroup && itsCertain && noProppedPieces) {
+                    this.winner = state;
                     return state;
                 }
             }
@@ -653,6 +667,7 @@ public class Logic {
                                 noProppedPiece(x + 2, y + 3) &&
                                 noProppedPiece(x + 3, y + 4);
                 if (thereIsAGroup && itsCertain && noProppedPieces) {
+                    this.winner = state;
                     return state;
                 }
             }
@@ -667,14 +682,16 @@ public class Logic {
      * @return "PPP" if purple has won the game, "YYY" if yellow has won the game, "XXX" if there game has not been won
      */
     public String checkWinner() {
-        if (checkColumns().equals("XXX")) {
+        if (!checkColumns().equals("XXX")) {
             return checkColumns();
-        } else if (checkRows().equals("XXX")) {
+        } else if (!checkRows().equals("XXX")) {
             return checkRows();
-        } else if (checkAscendingDiagonals().equals("XXX")) {
+        } else if (!checkAscendingDiagonals().equals("XXX")) {
             return checkAscendingDiagonals();
-        } else if (checkDescendingDiagonals().equals("XXX")) {
+        } else if (!checkDescendingDiagonals().equals("XXX")) {
             return checkDescendingDiagonals();
+        } else if (isGameDrawn()){
+            return "drawn";
         }
         return "XXX";
     }
@@ -688,7 +705,7 @@ public class Logic {
         int count = 0;
         for (int y = 7; y > 1; y--) {
             for (int x = 0; x < 7; x++) {
-                if (board[y][x].equals("XXX")) {
+                if (!board[y][x].equals("XXX")) {
                     count++;
                 }
             }
@@ -837,10 +854,39 @@ public class Logic {
             }
             System.out.println();
         }
+    }
 
+    /***
+     * Increments the position a random integer mod 7
+     */
+    public void incrementPositionRandomAmnt() {
+        Random random = new Random();
+        int column = random.nextInt() % 7;
+        for (int i = 0; i < column; i++) {
+            turnInProgress.incrementPosition();
+        }
+    }
 
+    /**
+     * This function makes a certain move
+     * */
+    public void playCertainMove() {
+        incrementPositionRandomAmnt();
+        while (place().equals("notDone")) {
+            incrementPositionRandomAmnt();
+        }
+    }
 
-
+    public void playClassicGame(){
+        int i = 0;
+        System.out.println(checkWinner());
+        while(winner.equals("XXX")){
+            playCertainMove();
+            changeTurn();
+            printBoard();
+            System.out.println("Played move " + i);
+            i++;
+        }
     }
 
 }
